@@ -32,7 +32,8 @@ public class KeycodeTest extends TestCase {
 		byte[] key = new byte[32];
 		Random r = new Random(0L);
 		r.nextBytes(key);
-		Keycode keycode = new Keycode(key);
+		Format format = Keycode.formatUnbroken();
+		Keycode keycode = format.keycode(key);
 		String str = keycode.toString();
 		StringBuilder sb = new StringBuilder(str);
 
@@ -47,7 +48,7 @@ public class KeycodeTest extends TestCase {
 					char newChar = CHARS[newVal];
 					sb.setCharAt(index, newChar);
 					try {
-						Keycode badcode = Keycode.parse(sb.toString());
+						Keycode badcode = format.parse(sb.toString());
 						System.out.println("Row " + i + " Column " + j);
 						System.out.println("BAD KEYCODE:");
 						System.out.println(badcode);
@@ -65,7 +66,8 @@ public class KeycodeTest extends TestCase {
 		byte[] key = new byte[32];
 		Random r = new Random(0L);
 		r.nextBytes(key);
-		Keycode keycode = new Keycode(key);
+		Format format = Keycode.formatUnbroken();
+		Keycode keycode = format.keycode(key);
 		String str = keycode.toString();
 		StringBuilder sb = new StringBuilder(str);
 
@@ -78,7 +80,7 @@ public class KeycodeTest extends TestCase {
 				sb.setCharAt(index    , c2);
 				sb.setCharAt(index + 1, c1);
 				try {
-					Keycode badcode = Keycode.parse(sb);
+					Keycode badcode = format.parse(sb);
 					System.out.println(keycode);
 					System.out.println("BAD KEYCODE:");
 					System.out.println(badcode);
@@ -97,11 +99,12 @@ public class KeycodeTest extends TestCase {
 		for (int test = 0; test < 10000; test++) {
 			byte[] bytes = new byte[32];
 			r.nextBytes(bytes);
-			Keycode first = new Keycode(bytes);
+			Format format = Keycode.formatUnbroken();
+			Keycode first = format.keycode(bytes);
 			String firstStr = first.toString();
 			Keycode second;
 			try {
-				second = Keycode.parse(firstStr);
+				second = format.parse(firstStr);
 			} catch (IllegalArgumentException e) {
 				System.err.println(firstStr);
 				throw e;
@@ -122,13 +125,14 @@ public class KeycodeTest extends TestCase {
 		Random r = new Random(10001L);
 		byte[] key = new byte[32];
 		r.nextBytes(key);
-		Keycode keycode = new Keycode(key);
+		Format standard = Keycode.formatStandard();
+		Keycode keycode = standard.keycode(key);
 		
-		String standard = keycode.format(Format.STANDARD);
-		assertEquals(63 + 6 + 14, standard.length());
-		assertEquals(keycode, Keycode.parse(standard));
+		String str = keycode.toString();
+		assertEquals(63 + 6 + 14, str.length());
+		assertEquals(keycode, standard.parse(str));
 		
-		System.out.println(standard);
+		System.out.println(str);
 	}
 	
 }
