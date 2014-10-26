@@ -202,7 +202,18 @@ public final class Keycode {
 			copy[32] = tag;
 			return new Keycode(this, copy, encode(copy));
 		}
+		
+		/**
+		 * Returns a keycode with the same key and tag as an existing keycode,
+		 * 
+		 * @param an existing keycode
+		 * @return the same key combined with this format.
+		 */
 
+		public Keycode keycode(Keycode keycode) {
+			if (keycode == null) throw new IllegalArgumentException("null keycode");
+			return keycode.format.equals(this) ? keycode : new Keycode(this, keycode.key, keycode.code);
+		}
 		
 		@Override
 		public int hashCode() {

@@ -125,14 +125,22 @@ public class KeycodeTest extends TestCase {
 		Random r = new Random(10001L);
 		byte[] key = new byte[32];
 		r.nextBytes(key);
-		Format standard = Keycode.formatStandard();
-		Keycode keycode = standard.keycode(key);
-		
+		testFormat( Keycode.formatStandard().keycode(key) );
+		testFormat( Keycode.formatPlatform().keycode(key) );
+		testFormat( Keycode.format("  ", "\t").keycode(key) );
+	}
+	
+	private void testFormat(Keycode keycode) {
+		Format format = keycode.getFormat();
+
+		// confirm output is parsable
 		String str = keycode.toString();
-		assertEquals(63 + 6 + 14, str.length());
-		assertEquals(keycode, standard.parse(str));
-		
-		System.out.println(str);
+		assertEquals(keycode, format.parse(str));
+
+		//confirm output matches expected format
+		int stdLength = Keycode.formatUnbroken().keycode(keycode).toString().length();
+		int expectedLength = stdLength + 7 * 2 * format.getGroupSeparator().length() + 6 * format.getLineSeparator().length();
+		assertEquals(expectedLength, str.length());
 	}
 	
 }
