@@ -20,11 +20,49 @@ import static com.tomgibara.keycode.Encoder.VALUES;
 
 import java.util.Arrays;
 
+/**
+ * <p>
+ * Encapsulates 256 bit (32 byte) keys for purpose of parsing & formatting them
+ * into ASCII keycodes. The formatted output is designed to provide brevity
+ * readability and a degree of human verifiability combined with the support of
+ * error detecting codes.
+ * <p>
+ * Instances of this class are immutable and are designed to be 'cheap' and
+ * 'temporary'.
+ * <p>
+ * Passing null into any method or constructor in this class will raise a
+ * {@code IllegalArgumentException}.
+ * 
+ * @author tomgibara
+ * 
+ */
+
+//TODO should we support serializability? Contains sensitive data - should be resisted?
 public final class Keycode {
 
+	/**
+	 * Defines formatting rules for outputting a keycode to a string.
+	 * 
+	 * @author tomgibara
+	 */
+	
 	public static final class Format {
 
+		/**
+		 * With this format, the keycode will not include group separators or
+		 * line separators. It will consist only of upper case alphanumeric
+		 * characters.
+		 */
+		
 		public static final Format UNBROKEN = new Format("", "");
+		
+		/**
+		 * With this format, the keycode will have newlines separating each
+		 * group-triple and a space between each group on a line. This is the
+		 * standard format which is expected to provide the best
+		 * communicability.
+		 */
+		
 		public static final Format STANDARD = new Format(" ", "\n");
 		
 		private static boolean isWhitespaceOnly(String str) {
@@ -40,6 +78,7 @@ public final class Keycode {
 		final String groupSeparator;
 		final String lineSeparator;
 		
+		//TODO consider changing to static method
 		public Format(String groupSeparator, String lineSeparator) {
 			if (groupSeparator == null) throw new IllegalArgumentException("null groupSeparator");
 			if (!isWhitespaceOnly(groupSeparator)) throw new IllegalArgumentException("non-whitespace groupSeparator");
@@ -61,6 +100,11 @@ public final class Keycode {
 		public int hashCode() {
 			return groupSeparator.hashCode() * 31 ^ lineSeparator.hashCode();
 		}
+		
+		/**
+		 * Two formats are equal if they produce identical output over all
+		 * possible keys.
+		 */
 		
 		@Override
 		public boolean equals(Object obj) {
@@ -95,6 +139,17 @@ public final class Keycode {
 		
 		return sb.toString();
 	}
+	
+	/**
+	 * Parses a keycode from character data.
+	 * 
+	 * @param code
+	 *            the character data of the code, typically a String
+	 * @throws IllegalArgumentException
+	 *             if the code contains non-whitespace, non-code characters OR
+	 *             has an invalid structure OR a data error is detected
+	 * @return a successfully parsed keycode
+	 */
 	
 	public static Keycode parse(CharSequence code) {
 		if (code == null) throw new IllegalArgumentException("null code");
@@ -165,11 +220,29 @@ public final class Keycode {
 		this.key = key;
 		this.code = code;
 	}
+
+	/**
+	 * Encapsulates a 256 bit key for subsequent output as a keycode via the
+	 * {@link #format(Format)} method. The tag is implicitly assumed to be
+	 * zero.
+	 * 
+	 * @param key
+	 *            a 32 byte array containing key data
+	 */
 	
 	public Keycode(byte[] key) {
 		this(key, (byte) 0);
 	}
 	
+	/**
+	 * Encapsulates a 256 bit key for subsequent output as a keycode, together
+	 * with a single byte tag which is also encoded along with the key.
+	 * 
+	 * @param key
+	 *            a 32 byte array containing key data
+	 * @see #getTag()
+	 */
+
 	public Keycode(byte[] key, byte tag) {
 		if (key == null) throw new IllegalArgumentException("null key");
 		if (key.length != 32) throw new IllegalArgumentException("invalid key length");
@@ -178,9 +251,36 @@ public final class Keycode {
 		this.key[32] = tag;
 	}
 	
+	/**
+	 * The key encapsulated by this object.
+	 * 
+	 * @return a 32 byte array containing a 256 bit key
+	 */
+	
 	public byte[] getKey() {
 		return Arrays.copyOf(key, 32);
 	}
+
+	/**
+	 * The tag associated with this key. The tag may be used to distinguish
+	 * multiple keys which are being supplied as part of a single message.
+	 * Alternatively the tag may be used as part of an additional application
+	 * specific checksum.
+	 * 
+	 * @return the tag associated with the key, typically zero
+	 */
+	
+	public byte getTag() {
+		return key[32];
+	}
+
+	/**
+	 * Formats a key into a String using the supplied format.
+	 * 
+	 * @param format
+	 *            controls the formatting of the output
+	 * @return a string containing the keycode
+	 */
 	
 	public String format(Format format) {
 		if (format == null) throw new IllegalArgumentException("null format");
