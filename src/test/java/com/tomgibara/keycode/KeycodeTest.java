@@ -32,7 +32,7 @@ public class KeycodeTest extends TestCase {
 		byte[] key = new byte[32];
 		Random r = new Random(0L);
 		r.nextBytes(key);
-		Format format = Format.unbroken();
+		Format format = Format.plain();
 		Keycode keycode = format.keycode(key);
 		String str = keycode.toString();
 		StringBuilder sb = new StringBuilder(str);
@@ -66,7 +66,7 @@ public class KeycodeTest extends TestCase {
 		byte[] key = new byte[32];
 		Random r = new Random(0L);
 		r.nextBytes(key);
-		Format format = Format.unbroken();
+		Format format = Format.plain();
 		Keycode keycode = format.keycode(key);
 		String str = keycode.toString();
 		StringBuilder sb = new StringBuilder(str);
@@ -99,7 +99,7 @@ public class KeycodeTest extends TestCase {
 		for (int test = 0; test < 10000; test++) {
 			byte[] bytes = new byte[32];
 			r.nextBytes(bytes);
-			Format format = Format.unbroken();
+			Format format = Format.plain();
 			Keycode first = format.keycode(bytes);
 			String firstStr = first.toString();
 			Keycode second;
@@ -138,7 +138,7 @@ public class KeycodeTest extends TestCase {
 		assertEquals(keycode, format.parse(str));
 
 		//confirm output matches expected format
-		int stdLength = Format.unbroken().keycode(keycode).toString().length();
+		int stdLength = Format.plain().keycode(keycode).toString().length();
 		int expectedLength = stdLength + 7 * 2 * format.getGroupSeparator().length() + 6 * format.getLineSeparator().length();
 		assertEquals(expectedLength, str.length());
 	}

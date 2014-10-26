@@ -80,7 +80,7 @@ public final class Keycode {
 			return true;
 		}
 
-		private static final Format UNBROKEN = new Format("", "");
+		private static final Format PLAIN = new Format("", "");
 		private static final Format STANDARD = new Format(" ", "\n");
 		private static final Format PLATFORM;
 		
@@ -97,8 +97,8 @@ public final class Keycode {
 		 * @return a format without whitespace
 		 */
 		
-		public static Format unbroken() {
-			return UNBROKEN;
+		public static Format plain() {
+			return PLAIN;
 		}
 		
 		/**
