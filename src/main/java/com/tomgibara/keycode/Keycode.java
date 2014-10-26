@@ -40,16 +40,6 @@ import java.util.Arrays;
 //TODO should we support serializability?
 public final class Keycode {
 
-	private static boolean isWhitespaceOnly(String str) {
-		for (int i = 0; i < str.length(); i++) {
-			char c = str.charAt(i);
-			if (c >= 128 || Encoder.VALUES[c] != -2) {
-				return false;
-			}
-		};
-		return true;
-	}
-
 	private static String encode(byte[] key) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -72,73 +62,6 @@ public final class Keycode {
 		return sb.toString();
 	}
 
-	public static final Format UNBROKEN = new Format("", "");
-	public static final Format STANDARD = new Format(" ", "\n");
-	public static final Format PLATFORM;
-	static {
-		String s = String.format("%n");
-		PLATFORM = s.equals(STANDARD.lineSeparator) ? STANDARD : new Format(" ", s);
-	}
-	
-	/**
-	 * With this format, the keycode will not include group separators or
-	 * line separators. It will consist only of upper case alphanumeric
-	 * characters.
-	 * 
-	 * @return a format without whitespace
-	 */
-	
-	public static Format formatUnbroken() {
-		return UNBROKEN;
-	}
-	
-	/**
-	 * A format in which, the keycode will have newlines separating each
-	 * group-triple and a space between each group on a line. This is the
-	 * standard format which is expected to provide the best
-	 * communicability.
-	 * 
-	 * @return a format with standard whitespace
-	 */
-	
-	public static Format formatStandard() {
-		return STANDARD;
-	}
-	
-	/**
-	 * Matches the standard format with the exception that the platform line
-	 * separator is used. This format will be identical to that of
-	 * {@link #formatStandard()} on platforms which use a single newline as a
-	 * line separator.
-	 * 
-	 * @return a format with platform whitespace
-	 */
-	
-	public static Format formatPlatform() {
-		return PLATFORM;
-	}
-
-	/**
-	 * Creates a new format with the specified group and line separators.
-	 * Separators must only consist of ASCII whitespace, specifically the
-	 * characters: ' ', '\t', '\n', '\r'
-	 * 
-	 * @param groupSeparator
-	 *            the characters inserted between groups
-	 * @param lineSeparator
-	 *            the characters inserted between lines
-	 * @return a format with the specified separators
-	 */
-	
-	public static Format format(String groupSeparator, String lineSeparator) {
-		if (groupSeparator == null) throw new IllegalArgumentException("null groupSeparator");
-		if (!isWhitespaceOnly(groupSeparator)) throw new IllegalArgumentException("non-whitespace groupSeparator");
-		if (lineSeparator == null) throw new IllegalArgumentException("null lineSeparator");
-		if (!isWhitespaceOnly(lineSeparator)) throw new IllegalArgumentException("non-whitespace lineSeparator");
-		//TODO canonicalize against standard formats?
-		return new Format(groupSeparator, lineSeparator);
-	}
-	
 	/**
 	 * Defines formatting rules for outputting a keycode to a string.
 	 * 
@@ -147,6 +70,84 @@ public final class Keycode {
 	
 	public static final class Format {
 
+		private static boolean isWhitespaceOnly(String str) {
+			for (int i = 0; i < str.length(); i++) {
+				char c = str.charAt(i);
+				if (c >= 128 || Encoder.VALUES[c] != -2) {
+					return false;
+				}
+			};
+			return true;
+		}
+
+		private static final Format UNBROKEN = new Format("", "");
+		private static final Format STANDARD = new Format(" ", "\n");
+		private static final Format PLATFORM;
+		
+		static {
+			String s = String.format("%n");
+			PLATFORM = s.equals(STANDARD.lineSeparator) ? STANDARD : new Format(" ", s);
+		}
+		
+		/**
+		 * With this format, the keycode will not include group separators or
+		 * line separators. It will consist only of upper case alphanumeric
+		 * characters.
+		 * 
+		 * @return a format without whitespace
+		 */
+		
+		public static Format unbroken() {
+			return UNBROKEN;
+		}
+		
+		/**
+		 * A format in which, the keycode will have newlines separating each
+		 * group-triple and a space between each group on a line. This is the
+		 * standard format which is expected to provide the best
+		 * communicability.
+		 * 
+		 * @return a format with standard whitespace
+		 */
+		
+		public static Format standard() {
+			return STANDARD;
+		}
+		
+		/**
+		 * Matches the standard format with the exception that the platform line
+		 * separator is used. This format will be identical to that of
+		 * {@link #formatStandard()} on platforms which use a single newline as a
+		 * line separator.
+		 * 
+		 * @return a format with platform whitespace
+		 */
+		
+		public static Format platform() {
+			return PLATFORM;
+		}
+
+		/**
+		 * Creates a new format with the specified group and line separators.
+		 * Separators must only consist of ASCII whitespace, specifically the
+		 * characters: ' ', '\t', '\n', '\r'
+		 * 
+		 * @param groupSeparator
+		 *            the characters inserted between groups
+		 * @param lineSeparator
+		 *            the characters inserted between lines
+		 * @return a format with the specified separators
+		 */
+		
+		public static Format custom(String groupSeparator, String lineSeparator) {
+			if (groupSeparator == null) throw new IllegalArgumentException("null groupSeparator");
+			if (!isWhitespaceOnly(groupSeparator)) throw new IllegalArgumentException("non-whitespace groupSeparator");
+			if (lineSeparator == null) throw new IllegalArgumentException("null lineSeparator");
+			if (!isWhitespaceOnly(lineSeparator)) throw new IllegalArgumentException("non-whitespace lineSeparator");
+			//TODO canonicalize against standard formats?
+			return new Format(groupSeparator, lineSeparator);
+		}
+		
 		final String groupSeparator;
 		final String lineSeparator;
 		

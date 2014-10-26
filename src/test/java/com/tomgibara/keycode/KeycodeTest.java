@@ -32,7 +32,7 @@ public class KeycodeTest extends TestCase {
 		byte[] key = new byte[32];
 		Random r = new Random(0L);
 		r.nextBytes(key);
-		Format format = Keycode.formatUnbroken();
+		Format format = Format.unbroken();
 		Keycode keycode = format.keycode(key);
 		String str = keycode.toString();
 		StringBuilder sb = new StringBuilder(str);
@@ -66,7 +66,7 @@ public class KeycodeTest extends TestCase {
 		byte[] key = new byte[32];
 		Random r = new Random(0L);
 		r.nextBytes(key);
-		Format format = Keycode.formatUnbroken();
+		Format format = Format.unbroken();
 		Keycode keycode = format.keycode(key);
 		String str = keycode.toString();
 		StringBuilder sb = new StringBuilder(str);
@@ -99,7 +99,7 @@ public class KeycodeTest extends TestCase {
 		for (int test = 0; test < 10000; test++) {
 			byte[] bytes = new byte[32];
 			r.nextBytes(bytes);
-			Format format = Keycode.formatUnbroken();
+			Format format = Format.unbroken();
 			Keycode first = format.keycode(bytes);
 			String firstStr = first.toString();
 			Keycode second;
@@ -125,9 +125,9 @@ public class KeycodeTest extends TestCase {
 		Random r = new Random(10001L);
 		byte[] key = new byte[32];
 		r.nextBytes(key);
-		testFormat( Keycode.formatStandard().keycode(key) );
-		testFormat( Keycode.formatPlatform().keycode(key) );
-		testFormat( Keycode.format("  ", "\t").keycode(key) );
+		testFormat( Format.standard().keycode(key) );
+		testFormat( Format.platform().keycode(key) );
+		testFormat( Format.custom("  ", "\t").keycode(key) );
 	}
 	
 	private void testFormat(Keycode keycode) {
@@ -138,7 +138,7 @@ public class KeycodeTest extends TestCase {
 		assertEquals(keycode, format.parse(str));
 
 		//confirm output matches expected format
-		int stdLength = Keycode.formatUnbroken().keycode(keycode).toString().length();
+		int stdLength = Format.unbroken().keycode(keycode).toString().length();
 		int expectedLength = stdLength + 7 * 2 * format.getGroupSeparator().length() + 6 * format.getLineSeparator().length();
 		assertEquals(expectedLength, str.length());
 	}
