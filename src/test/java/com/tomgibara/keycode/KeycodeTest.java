@@ -19,6 +19,11 @@ package com.tomgibara.keycode;
 import static com.tomgibara.keycode.Encoder.CHARS;
 import static com.tomgibara.keycode.Encoder.VALUES;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -121,7 +126,7 @@ public class KeycodeTest extends TestCase {
 		}
 	}
 	
-	public void testFormat() {
+	public void testFormat() throws IOException, ClassNotFoundException {
 		Random r = new Random(10001L);
 		byte[] key = new byte[32];
 		r.nextBytes(key);
@@ -129,18 +134,34 @@ public class KeycodeTest extends TestCase {
 		testFormat( Format.platform().keycode(key) );
 		testFormat( Format.custom("  ", "\t").keycode(key) );
 	}
-	
-	private void testFormat(Keycode keycode) {
+
+	private void testFormat(Keycode keycode) throws IOException, ClassNotFoundException {
 		Format format = keycode.getFormat();
 
 		// confirm output is parsable
 		String str = keycode.toString();
 		assertEquals(keycode, format.parse(str));
 
-		//confirm output matches expected format
+		// confirm output matches expected format
 		int stdLength = Format.plain().keycode(keycode).toString().length();
 		int expectedLength = stdLength + 7 * 2 * format.getGroupSeparator().length() + 6 * format.getLineSeparator().length();
 		assertEquals(expectedLength, str.length());
+		
+		// confirm keycode is serializable with that format
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ObjectOutputStream oo = new ObjectOutputStream(out);
+		oo.writeObject(keycode);
+		oo.close();
+		byte[] bytes = out.toByteArray();
+		ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+		ObjectInputStream oi = new ObjectInputStream(in);
+		Object result = oi.readObject();
+		assertEquals(keycode, result);
+		assertEquals(str, result.toString());
+		Format f = ((Keycode) result).getFormat();
+		assertEquals(format == Format.plain(), f == Format.plain());
+		assertEquals(format == Format.standard(), f == Format.standard());
+		assertEquals(format == Format.platform(), f == Format.platform());
 	}
-	
+
 }

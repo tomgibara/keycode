@@ -18,6 +18,7 @@ package com.tomgibara.keycode;
 
 import static com.tomgibara.keycode.Encoder.VALUES;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -37,8 +38,7 @@ import java.util.Arrays;
  * 
  */
 
-//TODO should we support serializability?
-public final class Keycode {
+public final class Keycode implements Serializable {
 
 	private static String encode(byte[] key) {
 		StringBuilder sb = new StringBuilder();
@@ -68,7 +68,7 @@ public final class Keycode {
 	 * @author tomgibara
 	 */
 	
-	public static final class Format {
+	public static final class Format implements Serializable {
 
 		private static boolean isWhitespaceOnly(String str) {
 			for (int i = 0; i < str.length(); i++) {
@@ -79,6 +79,8 @@ public final class Keycode {
 			};
 			return true;
 		}
+
+		private static final long serialVersionUID = -7846537134506341028L;
 
 		private static final Format PLAIN = new Format("", "");
 		private static final Format STANDARD = new Format(" ", "\n");
@@ -216,26 +218,6 @@ public final class Keycode {
 			return keycode.format.equals(this) ? keycode : new Keycode(this, keycode.key, keycode.code);
 		}
 		
-		@Override
-		public int hashCode() {
-			return groupSeparator.hashCode() * 31 ^ lineSeparator.hashCode();
-		}
-		
-		/**
-		 * Two formats are equal if they produce identical output over all
-		 * possible keys.
-		 */
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (obj == this) return true;
-			if (!(obj instanceof Format)) return false;
-			Format that = (Format) obj;
-			if (!this.groupSeparator.equals(that.groupSeparator)) return false;
-			if (!this.lineSeparator.equals(that.lineSeparator)) return false;
-			return true;
-		}
-		
 		/**
 		 * <p>
 		 * Parses a keycode from character data.
@@ -314,9 +296,37 @@ public final class Keycode {
 			// done
 			return new Keycode(this, key, str);
 		}
+
+		@Override
+		public int hashCode() {
+			return groupSeparator.hashCode() * 31 ^ lineSeparator.hashCode();
+		}
 		
+		/**
+		 * Two formats are equal if they produce identical output over all
+		 * possible keys.
+		 */
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == this) return true;
+			if (!(obj instanceof Format)) return false;
+			Format that = (Format) obj;
+			if (!this.groupSeparator.equals(that.groupSeparator)) return false;
+			if (!this.lineSeparator.equals(that.lineSeparator)) return false;
+			return true;
+		}
+		
+		private Object readResolve() {
+			if (this.equals(STANDARD)) return STANDARD;
+			if (this.equals(PLAIN)) return PLAIN;
+			if (this.equals(PLATFORM)) return PLATFORM;
+			return this;
+		}
 	}
 	
+	private static final long serialVersionUID = -8610389751205547848L;
+
 	private final Format format;
 	private final byte[] key;
 	private String code;
