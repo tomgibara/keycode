@@ -43,21 +43,22 @@ public final class Keycode implements Serializable {
 	private static String encode(byte[] key) {
 		StringBuilder sb = new StringBuilder();
 		
-		// first row
-		int block1 = ((key[0] & 0xff) << 1) | ((key[1] & 0x80) >> 7);
-		int block2 = ((key[1] & 0x7f) << 2) | ((key[2] & 0xc0) >> 6);
-		int block3 =  (key[2] & 0x3f);
-		Encoder.append3Bits(sb, block1);
-		Encoder.append3Bits(sb, block2);
-		Encoder.append2Bits(sb, block3);
-		sb.append(TAQG10.compute(sb, 0, 8));
-		
-		// subsequent rows
-		for (int i = 3; i < 33; i += 5) {
+		// initial rows
+		for (int i = 0; i < 30; i += 5) {
 			Encoder.appendBytes(sb, key, i);
+			//TODO replace with calc on i?
 			int length = sb.length();
 			sb.append(TAQG32.compute(sb, length - 8, length));
 		}
+		
+		// last row
+		int block1 = ((key[30] & 0xff) << 1) | ((key[31] & 0x80) >> 7);
+		int block2 = ((key[31] & 0x7f) << 2) | ((key[32] & 0xc0) >> 6);
+		int block3 =  (key[32] & 0x3f);
+		Encoder.append3Bits(sb, block1);
+		Encoder.append3Bits(sb, block2);
+		Encoder.append2Bits(sb, block3);
+		sb.append(TAQG10.compute(sb, 54, 62));
 		
 		return sb.toString();
 	}
@@ -261,37 +262,37 @@ public final class Keycode implements Serializable {
 			}
 			
 			// convert to a String
-			//TODO risk that char sequence will not return same characters that were checked
+			//note: risk that char sequence will not return same characters that were checked
 			String str = sb == null ? code.toString() : sb.append(code, last, codeLength).toString();
 			
 			// basic checks
 			if (str.length() == 0) throw new IllegalArgumentException("blank code");
 			if (str.length() < 63) throw new IllegalArgumentException("short code: " + str.length() + " characters");
 			if (str.length() > 63) throw new IllegalArgumentException("long code: " + str.length() + " characters");
-			for (int i = 0; i < 8; i++) { // TODO strengthen
-				char c = str.charAt(0);
+			for (int i = 54; i < 62; i++) { // TODO strengthen
+				char c = str.charAt(i);
 				if (c < 48 || c >= 58) throw new IllegalArgumentException("expected digit at character " + (i+1));
 			}
-			if (str.charAt(0) == '0') throw new IllegalArgumentException("invalid zero at first character");
-			if (str.charAt(3) == '0') throw new IllegalArgumentException("invalid zero at fourth character");
+			if (str.charAt(54) == '0') throw new IllegalArgumentException("invalid zero at first character of last row");
+			if (str.charAt(57) == '0') throw new IllegalArgumentException("invalid zero at fourth character of last row");
 
 			// checksums
-			if (!TAQG10.verify(str, 0, 9)) throw new IllegalArgumentException("invalid checksum for first row");
-			for (int i = 9; i < 63; i += 9) {
+			for (int i = 0; i < 54; i += 9) {
 				if (!TAQG32.verify(str, i, i + 9)) throw new IllegalArgumentException("invalid checksum for row " + (i / 9 + 1));
 			}
+			if (!TAQG10.verify(str, 54, 63)) throw new IllegalArgumentException("invalid checksum for last row");
 			
 			// parsing
 			byte[] key = new byte[33];
-			int block1 = Encoder.parse3Bits(str, 0);
-			int block2 = Encoder.parse3Bits(str, 3);
-			int block3 = Encoder.parse2Bits(str, 6);
-			key[0] = (byte) (  block1 >> 1                  );
-			key[1] = (byte) ( (block1 << 7) | (block2 >> 2) );
-			key[2] = (byte) ( (block2 << 6) |  block3       );
-			for (int i = 1; i < 7; i++) {
-				Encoder.parseBytes(str, i * 9, key, i * 5 - 2);
+			for (int i = 0; i < 6; i++) {
+				Encoder.parseBytes(str, i * 9, key, i * 5);
 			}
+			int block1 = Encoder.parse3Bits(str, 54);
+			int block2 = Encoder.parse3Bits(str, 57);
+			int block3 = Encoder.parse2Bits(str, 60);
+			key[30] = (byte) (  block1 >> 1                  );
+			key[31] = (byte) ( (block1 << 7) | (block2 >> 2) );
+			key[32] = (byte) ( (block2 << 6) |  block3       );
 
 			// done
 			return new Keycode(this, key, str);
