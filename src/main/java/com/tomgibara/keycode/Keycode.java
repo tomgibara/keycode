@@ -188,11 +188,14 @@ public final class Keycode implements Serializable {
 
 		/**
 		 * Encapsulates a 256 bit key for subsequent output as a keycode,
-		 * together with a single byte tag which is also encoded along with the
-		 * key.
+		 * together with a 7 bit tag which is also encoded along with the key.
+		 * The tag must be non-negative, that is, only the most-significant-bit
+		 * must be zero.
 		 * 
 		 * @param key
 		 *            a 32 byte array containing key data
+		 * @param tag
+		 *            a 7 bit value that augments the key data
 		 * @throws IllegalArgumentException
 		 *             if the array is not 32 bytes long
 		 * @see #getTag()
@@ -201,9 +204,10 @@ public final class Keycode implements Serializable {
 		public Keycode keycode(byte[] key, byte tag) {
 			if (key == null) throw new IllegalArgumentException("null key");
 			if (key.length != 32) throw new IllegalArgumentException("invalid key length");
+			if (tag < 0) throw new IllegalArgumentException("negative tag");
 			byte[] copy = new byte[33];
 			System.arraycopy(key, 0, copy, 0, 32);
-			copy[32] = tag;
+			copy[32] = (byte) (tag << 1);
 			return new Keycode(this, copy, encode(copy));
 		}
 		
@@ -368,7 +372,7 @@ public final class Keycode implements Serializable {
 	 */
 	
 	public byte getTag() {
-		return key[32];
+		return (byte) ((key[32] & 0xff) >> 1);
 	}
 
 	@Override

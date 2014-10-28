@@ -103,9 +103,10 @@ public class KeycodeTest extends TestCase {
 		Random r = new Random(0L);
 		for (int test = 0; test < 10000; test++) {
 			byte[] bytes = new byte[32];
+			byte tag = (byte) r.nextInt(128);
 			r.nextBytes(bytes);
 			Format format = Format.plain();
-			Keycode first = format.keycode(bytes);
+			Keycode first = format.keycode(bytes, tag);
 			String firstStr = first.toString();
 			Keycode second;
 			try {
@@ -123,6 +124,9 @@ public class KeycodeTest extends TestCase {
 				System.err.println(Arrays.toString(second.getKey()));
 				throw new IllegalStateException("not equal");
 			}
+			// don't rely on keycode equality alone to confirm roundtrip preseves all values
+			assertTrue(Arrays.equals(bytes, second.getKey()));
+			assertEquals(tag, second.getTag());
 		}
 	}
 	
