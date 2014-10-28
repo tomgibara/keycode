@@ -62,6 +62,40 @@ public final class Keycode implements Serializable {
 		
 		return sb.toString();
 	}
+	
+	private static byte[] decode(String str) {
+		// basic checks
+		if (str.length() == 0) throw new IllegalArgumentException("blank code");
+		if (str.length() < 63) throw new IllegalArgumentException("short code: " + str.length() + " characters");
+		if (str.length() > 63) throw new IllegalArgumentException("long code: " + str.length() + " characters");
+		for (int i = 54; i < 62; i++) { // TODO strengthen
+			char c = str.charAt(i);
+			if (c < 48 || c >= 58) throw new IllegalArgumentException("expected digit at character " + (i+1));
+		}
+		if (str.charAt(54) == '0') throw new IllegalArgumentException("invalid zero at first character of last row");
+		if (str.charAt(57) == '0') throw new IllegalArgumentException("invalid zero at fourth character of last row");
+
+		// checksums
+		for (int i = 0; i < 54; i += 9) {
+			if (!TAQG32.verify(str, i, i + 9)) throw new IllegalArgumentException("invalid checksum for row " + (i / 9 + 1));
+		}
+		if (!TAQG10.verify(str, 54, 63)) throw new IllegalArgumentException("invalid checksum for last row");
+		
+		// parsing
+		byte[] key = new byte[33];
+		for (int i = 0; i < 6; i++) {
+			Encoder.parseBytes(str, i * 9, key, i * 5);
+		}
+		int block1 = Encoder.parse3Bits(str, 54);
+		int block2 = Encoder.parse3Bits(str, 57);
+		int block3 = Encoder.parse2Bits(str, 60);
+		key[30] = (byte) (  block1 >> 1                  );
+		key[31] = (byte) ( (block1 << 7) | (block2 >> 2) );
+		key[32] = (byte) ( (block2 << 6) |  block3       );
+		
+		// all good - return
+		return key;
+	}
 
 	/**
 	 * Defines formatting rules for outputting a keycode to a string.
@@ -265,38 +299,10 @@ public final class Keycode implements Serializable {
 				}
 			}
 			
-			// convert to a String
+			// convert to a String and decode
 			//note: risk that char sequence will not return same characters that were checked
 			String str = sb == null ? code.toString() : sb.append(code, last, codeLength).toString();
-			
-			// basic checks
-			if (str.length() == 0) throw new IllegalArgumentException("blank code");
-			if (str.length() < 63) throw new IllegalArgumentException("short code: " + str.length() + " characters");
-			if (str.length() > 63) throw new IllegalArgumentException("long code: " + str.length() + " characters");
-			for (int i = 54; i < 62; i++) { // TODO strengthen
-				char c = str.charAt(i);
-				if (c < 48 || c >= 58) throw new IllegalArgumentException("expected digit at character " + (i+1));
-			}
-			if (str.charAt(54) == '0') throw new IllegalArgumentException("invalid zero at first character of last row");
-			if (str.charAt(57) == '0') throw new IllegalArgumentException("invalid zero at fourth character of last row");
-
-			// checksums
-			for (int i = 0; i < 54; i += 9) {
-				if (!TAQG32.verify(str, i, i + 9)) throw new IllegalArgumentException("invalid checksum for row " + (i / 9 + 1));
-			}
-			if (!TAQG10.verify(str, 54, 63)) throw new IllegalArgumentException("invalid checksum for last row");
-			
-			// parsing
-			byte[] key = new byte[33];
-			for (int i = 0; i < 6; i++) {
-				Encoder.parseBytes(str, i * 9, key, i * 5);
-			}
-			int block1 = Encoder.parse3Bits(str, 54);
-			int block2 = Encoder.parse3Bits(str, 57);
-			int block3 = Encoder.parse2Bits(str, 60);
-			key[30] = (byte) (  block1 >> 1                  );
-			key[31] = (byte) ( (block1 << 7) | (block2 >> 2) );
-			key[32] = (byte) ( (block2 << 6) |  block3       );
+			byte[] key = decode(str);
 
 			// done
 			return new Keycode(this, key, str);
