@@ -47,10 +47,10 @@ public class EncoderTest extends TestCase {
 		Set<String> codes = new HashSet<>();
 		for (int val = 0; val < (1 << 6); val++) {
 			StringBuilder sb = new StringBuilder();
-			Encoder.append2Bits(sb, val);
+			Encoder.append6Bits(sb, val);
 			String code = sb.toString();
 			if (code.length() != 2) throw new IllegalStateException();
-			int res = Encoder.parse2Bits(code, 0);
+			int res = Encoder.parse6Bits(code, 0);
 			if (res != val) throw new IllegalStateException("mismatch " + val + " -> " + res);
 			if (!codes.add(code)) throw new IllegalStateException();
 			if (code.charAt(0) == '0' || code.charAt(0) == code.charAt(1)) throw new IllegalStateException();
@@ -61,10 +61,10 @@ public class EncoderTest extends TestCase {
 		Set<String> codes = new HashSet<>();
 		for (int val = 0; val < (1 << 9); val++) {
 			StringBuilder sb = new StringBuilder();
-			Encoder.append3Bits(sb, val);
+			Encoder.append9Bits(sb, val);
 			String code = sb.toString();
 			if (code.length() != 3) throw new IllegalStateException();
-			int res = Encoder.parse3Bits(code, 0);
+			int res = Encoder.parse9Bits(code, 0);
 			if (res != val) throw new IllegalStateException("mismatch " + val + " -> " + res);
 			if (!codes.add(code)) throw new IllegalStateException();
 			if (code.charAt(0) == '0' || code.charAt(0) == code.charAt(1) || code.charAt(0) == code.charAt(2) || code.charAt(1) == code.charAt(2)) throw new IllegalStateException();

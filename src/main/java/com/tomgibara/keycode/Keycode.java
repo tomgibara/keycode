@@ -55,10 +55,10 @@ public final class Keycode implements Serializable {
 		int block1 = ((key[30] & 0xff) << 1) | ((key[31] & 0x80) >> 7);
 		int block2 = ((key[31] & 0x7f) << 2) | ((key[32] & 0xc0) >> 6);
 		int block3 =  (key[32] & 0x3f);
-		Encoder.append3Bits(sb, block1);
-		Encoder.append3Bits(sb, block2);
-		Encoder.append2Bits(sb, block3);
 		sb.append(TAQG10.compute(sb, 54, 62));
+		Encoder.append9Bits(sb, block1);
+		Encoder.append9Bits(sb, block2);
+		Encoder.append6Bits(sb, block3);
 		
 		return sb.toString();
 	}
@@ -86,9 +86,9 @@ public final class Keycode implements Serializable {
 		for (int i = 0; i < 6; i++) {
 			Encoder.parseBytes(str, i * 9, key, i * 5);
 		}
-		int block1 = Encoder.parse3Bits(str, 54);
-		int block2 = Encoder.parse3Bits(str, 57);
-		int block3 = Encoder.parse2Bits(str, 60);
+		int block1 = Encoder.parse9Bits(str, 54);
+		int block2 = Encoder.parse9Bits(str, 57);
+		int block3 = Encoder.parse6Bits(str, 60);
 		key[30] = (byte) (  block1 >> 1                  );
 		key[31] = (byte) ( (block1 << 7) | (block2 >> 2) );
 		key[32] = (byte) ( (block2 << 6) |  block3       );

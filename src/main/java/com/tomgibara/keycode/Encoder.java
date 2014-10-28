@@ -43,7 +43,7 @@ final class Encoder {
 		}
 	}
 	
-	static void append3Bits(StringBuilder sb, int val) {
+	static void append9Bits(StringBuilder sb, int val) {
 		int a = val / (9 * 8);
 		a++;
 		val %= 9 * 8;
@@ -61,7 +61,7 @@ final class Encoder {
 		sb.append((char) (48 + c));
 	}
 
-	static int parse3Bits(CharSequence src, int start) {
+	static int parse9Bits(CharSequence src, int start) {
 		int a = src.charAt(start + 0) - 48;
 		int b = src.charAt(start + 1) - 48;
 		int c = src.charAt(start + 2) - 48;
@@ -77,7 +77,7 @@ final class Encoder {
 		return (a * 9 + b) * 8 + c;
 	}
 
-	static void append2Bits(StringBuilder sb, int val) {
+	static void append6Bits(StringBuilder sb, int val) {
 		int a = val / 9;
 		a++;
 		val %= 9;
@@ -88,7 +88,7 @@ final class Encoder {
 		sb.append((char) (48 + b));
 	}
 
-	static int parse2Bits(CharSequence src, int start) {
+	static int parse6Bits(CharSequence src, int start) {
 		int a = src.charAt(start + 0) - 48;
 		int b = src.charAt(start + 1) - 48;
 		
