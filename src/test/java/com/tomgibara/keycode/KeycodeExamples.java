@@ -1,5 +1,6 @@
 package com.tomgibara.keycode;
 
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.KeyGenerator;
@@ -12,6 +13,9 @@ public class KeycodeExamples {
 		KeyGenerator keygen = KeyGenerator.getInstance("AES"); keygen.init(256);
 		byte[] key = keygen.generateKey().getEncoded();
 
+		// hex representation
+		System.out.println(String.format("%064x", new BigInteger(1, key)));
+
 		// output keycode with newlines and spaces
 		String standard = Keycode.Format.standard().keycode(key).toString();
 
@@ -21,6 +25,7 @@ public class KeycodeExamples {
 		// output keycode with platform specific whitespace
 		String platform = Keycode.Format.platform().keycode(key).toString();
 
+		System.out.println();
 		System.out.println(standard);
 		System.out.println();
 		System.out.println(plain);
