@@ -168,4 +168,22 @@ public class KeycodeTest extends TestCase {
 		assertEquals(format == Format.platform(), f == Format.platform());
 	}
 
+	public void testNoDigitPairs() {
+		Format format = Format.plain();
+		Random r = new Random();
+		byte[] key = new byte[32];
+		byte tag;
+		for (int i = 0; i < 10000; i++) {
+			r.nextBytes(key);
+			tag = (byte) r.nextInt(128);
+			String str = format.keycode(key, tag).toString();
+			assertFalse(str, str.charAt(54) == str.charAt(55));
+			assertFalse(str, str.charAt(55) == str.charAt(56));
+			assertFalse(str, str.charAt(57) == str.charAt(58));
+			assertFalse(str, str.charAt(58) == str.charAt(59));
+			assertFalse(str, str.charAt(60) == str.charAt(61));
+			assertFalse(str, str.charAt(61) == str.charAt(62));
+		}
+	}
+
 }
