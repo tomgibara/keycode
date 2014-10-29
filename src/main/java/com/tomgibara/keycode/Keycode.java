@@ -82,6 +82,7 @@ public final class Keycode implements Serializable {
 		}
 		if (str.charAt(54) == '0') throw new IllegalArgumentException("invalid zero at first character of last row");
 		if (str.charAt(57) == '0') throw new IllegalArgumentException("invalid zero at fourth character of last row");
+		if (str.charAt(60) == '0') throw new IllegalArgumentException("invalid zero at seventh character of last row");
 
 		// checksums
 		for (int i = 0; i < 54; i += 9) {
