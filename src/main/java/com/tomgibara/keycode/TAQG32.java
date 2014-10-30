@@ -16,8 +16,8 @@
  */
 package com.tomgibara.keycode;
 
-import static com.tomgibara.keycode.Encoder.CHARS;
-import static com.tomgibara.keycode.Encoder.VALUES;
+import static com.tomgibara.keycode.Encoder.CHARS_32;
+import static com.tomgibara.keycode.Encoder.VALUES_32;
 
 final class TAQG32 {
 
@@ -45,12 +45,12 @@ final class TAQG32 {
 					if (x == -1) {
 						c = ' ';
 					} else {
-						c = CHARS[x];
+						c = CHARS_32[x];
 					}
 				} else if (x == -1) {
-					c = CHARS[y];
+					c = CHARS_32[y];
 				} else {
-					c = CHARS[op(x, y)];
+					c = CHARS_32[op(x, y)];
 				}
 				sb.append(c);
 			}
@@ -75,14 +75,14 @@ final class TAQG32 {
 		int x = 0;
 		for (int i = start; i < finish; i++) {
 			int c = cs.charAt(i);
-			int v = VALUES[c];
+			int v = VALUES_32[c];
 			x = op(x, v);
 		}
 		return x;
 	}
 	
 	static char compute(CharSequence cs, int start, int finish) {
-		return CHARS[opInv(accumulateChecksum(cs, start, finish), 0)];
+		return CHARS_32[opInv(accumulateChecksum(cs, start, finish), 0)];
 	}
 	
 	static boolean verify(CharSequence cs, int start, int finish) {

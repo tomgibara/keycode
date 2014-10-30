@@ -16,8 +16,8 @@
  */
 package com.tomgibara.keycode;
 
-import static com.tomgibara.keycode.Encoder.CHARS;
-import static com.tomgibara.keycode.Encoder.VALUES;
+import static com.tomgibara.keycode.Encoder.CHARS_32;
+import static com.tomgibara.keycode.Encoder.VALUES_32;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,11 +46,11 @@ public class KeycodeTest extends TestCase {
 			for (int j = 0; j < 9; j++) {
 				int index = i * 9 + j;
 				char oldChar = sb.charAt(index);
-				int oldVal = VALUES[oldChar] & 0xff;
+				int oldVal = VALUES_32[oldChar] & 0xff;
 				int limit = i < 9 ? 10 : 32;
 				for (int newVal = 0; newVal < limit; newVal++) {
 					if (newVal == oldVal) continue;
-					char newChar = CHARS[newVal];
+					char newChar = CHARS_32[newVal];
 					sb.setCharAt(index, newChar);
 					try {
 						Keycode badcode = format.parse(sb.toString());

@@ -16,7 +16,6 @@
  */
 package com.tomgibara.keycode;
 
-import static com.tomgibara.keycode.Encoder.VALUES;
 
 final class TAQG10 {
 
@@ -37,14 +36,14 @@ final class TAQG10 {
 		int x = 0;
 		for (int i = start; i < finish; i++) {
 			int c = cs.charAt(i);
-			int v = VALUES[c];
+			int v = c - 48;
 			x = TABLE[x * 10 + v];
 		}
 		return x;
 	}
 	
 	static char compute(CharSequence cs, int start, int finish) {
-		return Encoder.CHARS[ accumulateChecksum(cs, start, finish) ];
+		return (char) (accumulateChecksum(cs, start, finish) + 48);
 	}
 	
 	static boolean verify(CharSequence cs, int start, int finish) {

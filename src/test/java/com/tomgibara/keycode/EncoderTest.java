@@ -31,9 +31,9 @@ public class EncoderTest extends TestCase {
 		for (int test = 0; test < 100; test++) {
 			StringBuilder sb = new StringBuilder(8);
 			r.nextBytes(bs);
-			Encoder.appendBytes(sb, bs, 0);
+			Encoder.appendBytesBase32(sb, bs, 0);
 			byte[] check = new byte[5];
-			Encoder.parseBytes(sb, 0, check, 0);
+			Encoder.parseBytesBase32(sb, 0, check, 0);
 			if (!Arrays.equals(bs, check)) {
 				System.err.println(Arrays.toString(bs));
 				System.err.println(sb);

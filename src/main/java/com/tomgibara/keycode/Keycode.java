@@ -16,7 +16,7 @@
  */
 package com.tomgibara.keycode;
 
-import static com.tomgibara.keycode.Encoder.VALUES;
+import static com.tomgibara.keycode.Encoder.VALUES_32;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public final class Keycode implements Serializable {
 		
 		// initial rows
 		for (int i = 0; i < 30; i += 5) {
-			Encoder.appendBytes(sb, key, i);
+			Encoder.appendBytesBase32(sb, key, i);
 			int length = sb.length();
 			sb.append(TAQG32.compute(sb, length - 8, length));
 		}
@@ -93,7 +93,7 @@ public final class Keycode implements Serializable {
 		// parsing
 		byte[] key = new byte[33];
 		for (int i = 0; i < 6; i++) {
-			Encoder.parseBytes(str, i * 9, key, i * 5);
+			Encoder.parseBytesBase32(str, i * 9, key, i * 5);
 		}
 		int block1 = Encoder.parse9Bits(str, 54);
 		int block2 = Encoder.parse9Bits(str, 57);
@@ -117,7 +117,7 @@ public final class Keycode implements Serializable {
 		private static boolean isWhitespaceOnly(String str) {
 			for (int i = 0; i < str.length(); i++) {
 				char c = str.charAt(i);
-				if (c >= 128 || Encoder.VALUES[c] != -2) {
+				if (c >= 128 || Encoder.VALUES_32[c] != -2) {
 					return false;
 				}
 			};
@@ -294,7 +294,7 @@ public final class Keycode implements Serializable {
 			for (int i = 0; i < codeLength; i++) {
 				char c = code.charAt(i);
 				if (c >= 128) throw new IllegalArgumentException("non-ascii character at " + (i + 1));
-				int value = VALUES[c];
+				int value = VALUES_32[c];
 				switch (value) {
 				case -2:
 					if (last != i) {

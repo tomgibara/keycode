@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 final class Encoder {
 
-	static final char[] CHARS = {
+	static final char[] CHARS_32 = {
 		
 		'0', '1', '2', '3', '4', '5', '6', '7',
 		'8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
@@ -29,17 +29,17 @@ final class Encoder {
 		
 	};
 	
-	static final byte[] VALUES = new byte[128];
+	static final byte[] VALUES_32 = new byte[128];
 	
 	static final char[] WHITESPACE = { ' ', '\t', '\n', '\r' };
 	
 	static {
-		Arrays.fill(VALUES, (byte) -1);
-		for (int i = 0; i < CHARS.length; i++) {
-			VALUES[CHARS[i]] = (byte) i;
+		Arrays.fill(VALUES_32, (byte) -1);
+		for (int i = 0; i < CHARS_32.length; i++) {
+			VALUES_32[CHARS_32[i]] = (byte) i;
 		}
 		for (int i = 0; i < WHITESPACE.length; i++) {
-			VALUES[WHITESPACE[i]] = -2;
+			VALUES_32[WHITESPACE[i]] = -2;
 		}
 	}
 	
@@ -104,7 +104,7 @@ final class Encoder {
 	aaaaabbbbbcccccdddddeeeeefffffggggghhhhh
 */
 
-	static void appendBytes(StringBuilder sb, byte[] bs, int from) {
+	static void appendBytesBase32(StringBuilder sb, byte[] bs, int from) {
 		int a = ((bs[from    ] & 0xf8) >> 3);
 		int b = ((bs[from    ] & 0x07) << 2) | ((bs[from + 1] & 0xc0) >> 6);
 		int c = ((bs[from + 1] & 0x3e) >> 1);
@@ -114,25 +114,25 @@ final class Encoder {
 		int g = ((bs[from + 3] & 0x03) << 3) | ((bs[from + 4] & 0xe0) >> 5);
 		int h =  (bs[from + 4] & 0x1f);
 		
-		sb.append(CHARS[a]);
-		sb.append(CHARS[b]);
-		sb.append(CHARS[c]);
-		sb.append(CHARS[d]);
-		sb.append(CHARS[e]);
-		sb.append(CHARS[f]);
-		sb.append(CHARS[g]);
-		sb.append(CHARS[h]);
+		sb.append(CHARS_32[a]);
+		sb.append(CHARS_32[b]);
+		sb.append(CHARS_32[c]);
+		sb.append(CHARS_32[d]);
+		sb.append(CHARS_32[e]);
+		sb.append(CHARS_32[f]);
+		sb.append(CHARS_32[g]);
+		sb.append(CHARS_32[h]);
 	}
 	
-	static void parseBytes(CharSequence src, int start, byte[] key, int offset) {
-		int a = VALUES[src.charAt(start    )];
-		int b = VALUES[src.charAt(start + 1)];
-		int c = VALUES[src.charAt(start + 2)];
-		int d = VALUES[src.charAt(start + 3)];
-		int e = VALUES[src.charAt(start + 4)];
-		int f = VALUES[src.charAt(start + 5)];
-		int g = VALUES[src.charAt(start + 6)];
-		int h = VALUES[src.charAt(start + 7)];
+	static void parseBytesBase32(CharSequence src, int start, byte[] key, int offset) {
+		int a = VALUES_32[src.charAt(start    )];
+		int b = VALUES_32[src.charAt(start + 1)];
+		int c = VALUES_32[src.charAt(start + 2)];
+		int d = VALUES_32[src.charAt(start + 3)];
+		int e = VALUES_32[src.charAt(start + 4)];
+		int f = VALUES_32[src.charAt(start + 5)];
+		int g = VALUES_32[src.charAt(start + 6)];
+		int h = VALUES_32[src.charAt(start + 7)];
 
 		key[offset    ] = (byte) ((a << 3) | (b >> 2));
 		key[offset + 1] = (byte) ((b << 6) | (c << 1) | (d >> 4));
