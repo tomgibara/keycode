@@ -2,3 +2,7 @@
 /.project
 /.settings
 /target
+/notes.txt
+\#*#
+*.pdf
+*~
