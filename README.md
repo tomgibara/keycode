@@ -52,6 +52,21 @@ and spoken 256-bit key exchange.
 Usage
 -----
 
+A Java library for parsing and formatting keycode is available from the Maven
+central repository:
+
+> Group ID:    `com.tomgibara.keycode`
+> Artifact ID: `keycode`
+> Version:     `1.0.0`
+
+The Maven dependency being:
+
+    <dependency>
+      <groupId>com.tomgibara.keycode</groupId>
+      <artifactId>keycode</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
 The library is very simple, consisting of just two abstractions: the
 `Keycode.Format` class which encapsulates formatting rules, and the `Keycode`
 class which combines *key data* with a *format*.
