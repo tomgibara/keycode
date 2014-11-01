@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 
 public class EncoderTest extends TestCase {
 
-	public void testAppendBytes() throws Exception {
+	public void testAppendBytesBase32() throws Exception {
 		Random r = new Random(0L);
 		byte[] bs = new byte[5];
 		for (int test = 0; test < 100; test++) {
@@ -43,7 +43,7 @@ public class EncoderTest extends TestCase {
 		}
 	}
 
-	public void testAppend2Bits() throws Exception {
+	public void testAppend6Bits() throws Exception {
 		Set<String> codes = new HashSet<>();
 		for (int val = 0; val < (1 << 6); val++) {
 			StringBuilder sb = new StringBuilder();
@@ -57,7 +57,7 @@ public class EncoderTest extends TestCase {
 		}
 	}
 	
-	public void testAppend3Bits() throws Exception {
+	public void testAppend9Bits() throws Exception {
 		Set<String> codes = new HashSet<>();
 		for (int val = 0; val < (1 << 9); val++) {
 			StringBuilder sb = new StringBuilder();
