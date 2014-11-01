@@ -5,6 +5,7 @@ import static java.lang.String.format;
 import java.io.PrintStream;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Random;
 
 import javax.crypto.KeyGenerator;
@@ -42,6 +43,11 @@ public class KeycodeExamples {
 		// parse the generated output
 		Keycode.Format.standard().parse(standard).getKey();
 
+		// show all zero key
+		System.out.println();
+		Arrays.fill(key, (byte) 0);
+		System.out.println(Keycode.Format.plain().keycode(key));
+		
 		out.println();
 		BitVector v = new BitVector(new Random(0), 256);
 		System.out.println(v.getBits(251, 5));

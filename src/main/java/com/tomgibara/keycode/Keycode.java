@@ -90,6 +90,18 @@ public final class Keycode implements Serializable {
 		}
 		if (!TAQG10.verify(str, 54, 63)) throw new IllegalArgumentException("invalid checksum for last row");
 		
+		// double digits
+		if (
+				str.charAt(54) == str.charAt(55) ||
+				str.charAt(55) == str.charAt(56) ||
+				str.charAt(57) == str.charAt(58) ||
+				str.charAt(58) == str.charAt(59) ||
+				str.charAt(60) == str.charAt(61) ||
+				str.charAt(61) == str.charAt(62)
+				) {
+			throw new IllegalArgumentException("invalid digit pairs");
+		}
+		
 		// parsing
 		byte[] key = new byte[33];
 		for (int i = 0; i < 6; i++) {
@@ -98,6 +110,9 @@ public final class Keycode implements Serializable {
 		int block1 = Encoder.parse9Bits(str, 54);
 		int block2 = Encoder.parse9Bits(str, 57);
 		int block3 = Encoder.parse6Bits(str, 60);
+		if (block1 >= 512) throw new IllegalArgumentException("invalid first digit triple");
+		if (block2 >= 512) throw new IllegalArgumentException("invalid second digit triple");
+		if (block3 >= 64) throw new IllegalArgumentException("invalid third digit triple");
 		key[30] = (byte) (  block1                 >> 1               );
 		key[31] = (byte) (  block1                 << 7 | block2 >> 2 );
 		key[32] = (byte) ( (block2 & 0b0000111101) << 6 | block3      );

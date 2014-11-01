@@ -186,4 +186,19 @@ public class KeycodeTest extends TestCase {
 		}
 	}
 
+	public void testInvalidTriples() {
+		checkBad("000000000000000000000000000000000000000000000000000000810102101"); // first triple too large
+		checkBad("000000000000000000000000000000000000000000000000000000102810108"); // second triple too large
+		checkBad("000000000000000000000000000000000000000000000000000000102102814"); // third triple too large
+		checkBad("000000000000000000000000000000000000000000000000000000102102118"); // invalid digit pair
+	}
+
+	private void checkBad(String bad) {
+		try {
+			Keycode.Format.plain().parse(bad);
+			fail(bad);
+		} catch (IllegalArgumentException e) {
+			/* expected */
+		}
+	}
 }
