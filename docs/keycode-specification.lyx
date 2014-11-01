@@ -109,7 +109,7 @@ tag
 \emph default
  which is limited to values in the range 0-127.
  The role of both the key and tag are application specific, but it is anticipate
-d that the key will be secure private key of a known type; the tag might
+d that the key will be a secure private key of a known type; the tag might
  serve any number of application specific functions, including identifying
  the key type, or distinguishing between multiple keys.
 \end_layout
@@ -474,7 +474,7 @@ status collapsed
 
 \end_inset
 
- triples collectively encode that number data bits.
+ triples collectively encode that number of data bits.
  The 
 \begin_inset Flex Code
 status collapsed
@@ -691,7 +691,8 @@ http://en.wikipedia.org/wiki/Damm_algorithm
 \end_inset
 
 .
- Whitespace plays no part in the computation of any checksum.
+ White\SpecialChar \-
+space plays no part in the computation of any checksum.
 \end_layout
 
 \begin_layout Standard
