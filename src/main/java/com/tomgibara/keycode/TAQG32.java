@@ -29,7 +29,7 @@ final class TAQG32 {
 	}
 	
 	// find y st. x*y = z
-	private static int opInv(int x, int z) {
+	static int opInv(int x, int z) {
 		for (int y = 0; y < 32; y++) {
 			if (op(x,y) == z) return y;
 		}

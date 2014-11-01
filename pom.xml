@@ -133,6 +133,13 @@
       <type>jar</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.tomgibara.bits</groupId>
+      <artifactId>bits</artifactId>
+      <version>1.0.0</version>
+      <type>jar</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

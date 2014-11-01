@@ -543,6 +543,12 @@ reference "sub:Base-32-Character"
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Nine-Bit-Encoding"
+
+\end_inset
+
 Nine Bit Encoding
 \end_layout
 
@@ -572,8 +578,8 @@ a+1 & a\geqslant x_{0}
  & \text{where}\: a=\left\lfloor \frac{v\bmod72}{8}\right\rfloor \\
 x_{2}= & \begin{cases}
 b & b<\min(x_{o},x_{1})\\
-b+1 & \min(x_{o},x_{1})\leqslant b<\max(x_{o},x_{1})\\
-b+2 & \max(x_{o},x_{1})\leqslant b
+b+1 & \min(x_{o},x_{1})\leqslant b<\max(x_{o},x_{1})-1\\
+b+2 & \mbox{otherwise}
 \end{cases}\\
  & \text{where }b=v\bmod8
 \end{aligned}
@@ -609,6 +615,12 @@ Then the mapping
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Six-Bit-Encoding"
+
+\end_inset
+
 Six Bit Encoding
 \end_layout
 
@@ -769,6 +781,513 @@ If this situation occurs, then the MSB of the tag byte is set and the last
 \begin_layout Standard
 Note that the status of the tag byte's MSB is strictly an encoding concern;
  the tag value reported by the decoder will not be changed.
+\end_layout
+
+\begin_layout Section
+Example
+\end_layout
+
+\begin_layout Standard
+Beginning with a randomly generated 256 bit key:
+\end_layout
+
+\begin_layout Standard
+\align center
+
+\family typewriter
+8ce970b71df42503a32dc9f64f1df03a
+\begin_inset Newline newline
+\end_inset
+
+3d93cb799b3970bebb20b45fd4d95138
+\end_layout
+
+\begin_layout Standard
+Splitting the first 240 bits of the key into 5 bit words provides the values
+ needed to compute the checksums for the first 6 rows (underlined below).
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+
+\family typewriter
+17
+\begin_inset space ~
+\end_inset
+
+19
+\begin_inset space ~
+\end_inset
+
+20
+\begin_inset space ~
+\end_inset
+
+23
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+1
+\begin_inset space ~
+\end_inset
+
+13
+\begin_inset space ~
+\end_inset
+
+24
+\begin_inset space ~
+\end_inset
+
+29
+\begin_inset space ~
+\end_inset
+
+
+\bar under
+
+\begin_inset space ~
+\end_inset
+
+7
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+30
+\begin_inset space ~
+\end_inset
+
+16
+\begin_inset space ~
+\end_inset
+
+18
+\begin_inset space ~
+\end_inset
+
+16
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+7
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+8
+\begin_inset space ~
+\end_inset
+
+25
+\begin_inset space ~
+\end_inset
+
+13
+\begin_inset space ~
+\end_inset
+
+
+\bar under
+30
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+25
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+7
+\begin_inset space ~
+\end_inset
+
+27
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+4
+\begin_inset space ~
+\end_inset
+
+30
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+7
+\begin_inset space ~
+\end_inset
+
+15
+\begin_inset space ~
+\end_inset
+
+16
+\begin_inset space ~
+\end_inset
+
+
+\bar under
+17
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+7
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+8
+\begin_inset space ~
+\end_inset
+
+30
+\begin_inset space ~
+\end_inset
+
+25
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+7
+\begin_inset space ~
+\end_inset
+
+18
+\begin_inset space ~
+\end_inset
+
+27
+\begin_inset space ~
+\end_inset
+
+25
+\begin_inset space ~
+\end_inset
+
+
+\bar under
+24
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+19
+\begin_inset space ~
+\end_inset
+
+12
+\begin_inset space ~
+\end_inset
+
+28
+\begin_inset space ~
+\end_inset
+
+23
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+1
+\begin_inset space ~
+\end_inset
+
+15
+\begin_inset space ~
+\end_inset
+
+21
+\begin_inset space ~
+\end_inset
+
+27
+\begin_inset space ~
+\end_inset
+
+
+\bar under
+31
+\bar default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+4
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+2
+\begin_inset space ~
+\end_inset
+
+26
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+5
+\begin_inset space ~
+\end_inset
+
+31
+\begin_inset space ~
+\end_inset
+
+21
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+6
+\begin_inset space ~
+\end_inset
+
+25
+\begin_inset space ~
+\end_inset
+
+
+\bar under
+
+\begin_inset space ~
+\end_inset
+
+2
+\end_layout
+
+\begin_layout Standard
+Checksum computation proceeds using the Damm algorithm: a left fold is performed
+ over the row values using the quasigroup operator with an initial value
+ of zero.
+ In the case of the first row above, the sequence of values generated is
+ 
+\begin_inset Formula $0,17,20,25,0,1,15,6,17$
+\end_inset
+
+.
+ Because the QG used for the 32 bit checksum 
+\emph on
+does not
+\emph default
+ have zeros along its major diagonal, an additional step is required to
+ compute the checksum which consists of finding the inverse w.r.t 0.
+ In this case 
+\begin_inset Formula $\mbox{\ensuremath{17*7=0}}$
+\end_inset
+
+, so the checksum value is 7.
+\end_layout
+
+\begin_layout Standard
+If the tag is set to zero, the remaining 16 key bits, combined with the
+ 8 tag bits, yield the numbers 162, 224 and 0 when split into 9,9,6 bits.
+ Applying the 9 bit encoding given in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Nine-Bit-Encoding"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+x_{o} & = & \left\lfloor \frac{162}{72}\right\rfloor +1=3\\
+x_{1} & = & \left\lfloor \frac{162\bmod72}{8}\right\rfloor =2\mbox{ since }2<3\\
+x_{2} & = & v\bmod8+2=4\mbox{ since }2\geqslant2
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So the triple which encodes 162 is 
+\begin_inset Formula $\mbox{\ensuremath{(3,2,4)}}$
+\end_inset
+
+.
+ Applying the same algorithm to 224 gives 
+\begin_inset Formula $\mbox{\ensuremath{(4,1,0)}}$
+\end_inset
+
+.
+ Using the simpler 6 bit encoding on the final zero value gives:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+x_{o} & = & \left\lfloor \frac{0}{9}\right\rfloor +1=1\\
+x_{1} & = & 0\bmod9=0\mbox{ since }0<1
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thus the final row (without checksum) consists of the digits 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+324
+\family typewriter
+
+\begin_inset space ~
+\end_inset
+
+
+\family default
+410
+\family typewriter
+
+\begin_inset space ~
+\end_inset
+
+
+\family default
+10
+\end_layout
+
+\end_inset
+
+.
+ The final checksum is again obtained via the Damm algorithm, but this time
+ using the order 10 quasigroup of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Order-10-TA"
+
+\end_inset
+
+.
+ In this instance, the quasigroup major diagonal is zero, so the inverse
+ operation unnecessary and the checksum digit is simply the value obtained
+ by folding; the value sequence is 
+\begin_inset Formula $0,7,4,0,5,6,5,6,5$
+\end_inset
+
+ so the checksum digit is 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+5
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In this case the final checksum digit does not create a digit pair, so the
+ computed last row stands.
+ Applying the character mapping in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Base-32-Character"
+
+\end_inset
+
+, appending the last row and inserting group spacing gives the formatted
+ key data.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+
+\family typewriter
+HKL P1D QW7
+\begin_inset Newline newline
+\end_inset
+
+XGJ G78 RDX
+\begin_inset Newline newline
+\end_inset
+
+R7U 4X7 FGH
+\begin_inset Newline newline
+\end_inset
+
+78X R7J URQ
+\begin_inset Newline newline
+\end_inset
+
+KCV P1F MUY
+\begin_inset Newline newline
+\end_inset
+
+42T 5YM 6R2
+\begin_inset Newline newline
+\end_inset
+
+324 410 105
 \end_layout
 
 \begin_layout Standard
