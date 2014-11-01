@@ -40,6 +40,14 @@ import java.util.Arrays;
 
 public final class Keycode implements Serializable {
 
+	private static char appendDigits(StringBuilder sb, int block1, int block2, int block3) {
+		int i = sb.length();
+		Encoder.append9Bits(sb, block1);
+		Encoder.append9Bits(sb, block2);
+		Encoder.append6Bits(sb, block3);
+		return TAQG10.compute(sb, i, i + 8);
+	}
+	
 	private static String encode(byte[] key) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -54,23 +62,18 @@ public final class Keycode implements Serializable {
 		int block1 = ((key[30] & 0xff) << 1) | ((key[31] & 0x80) >> 7);
 		int block2 = ((key[31] & 0x7f) << 2) | ((key[32] & 0xc0) >> 6);
 		int block3 =  (key[32] & 0x3f);
-		Encoder.append9Bits(sb, block1);
-		Encoder.append9Bits(sb, block2);
-		Encoder.append6Bits(sb, block3);
-		char c = TAQG10.compute(sb, 54, 62);
+		char c = appendDigits(sb, block1, block2, block3);
 		char k = sb.charAt(61);
 		if (c == k) {
 			block2 ^= 2; // flip the sign-bit of the tag
-			sb.setLength(57);
-			Encoder.append9Bits(sb, block2);
-			Encoder.append6Bits(sb, block3);
-			c = TAQG10.compute(sb, 54, 62);
+			sb.setLength(54);
+			c = appendDigits(sb, block1, block2, block3);
 		}
 		sb.append(c);
 		
 		return sb.toString();
 	}
-	
+
 	private static byte[] decode(String str) {
 		// basic checks
 		if (str.length() == 0) throw new IllegalArgumentException("blank code");
@@ -113,9 +116,19 @@ public final class Keycode implements Serializable {
 		if (block1 >= 512) throw new IllegalArgumentException("invalid first digit triple");
 		if (block2 >= 512) throw new IllegalArgumentException("invalid second digit triple");
 		if (block3 >= 64) throw new IllegalArgumentException("invalid third digit triple");
-		key[30] = (byte) (  block1                 >> 1               );
-		key[31] = (byte) (  block1                 << 7 | block2 >> 2 );
-		key[32] = (byte) ( (block2 & 0b0000111101) << 6 | block3      );
+		boolean f = (block2 & 2) != 0;
+		if (f) {
+			block2 &= ~2;
+			StringBuilder sb = new StringBuilder();
+			char c  = appendDigits(sb, block1, block2, block3);
+			char k = sb.charAt(7);
+			if (c != k) throw new IllegalArgumentException("invalid tag bit flip");
+		}
+		
+		
+		key[30] = (byte) ( block1 >> 1               );
+		key[31] = (byte) ( block1 << 7 | block2 >> 2 );
+		key[32] = (byte) ( block2 << 6 | block3      );
 		
 		// all good - return
 		return key;
