@@ -4,7 +4,7 @@ Keycode
 Description
 -----------
 
-Keycode is a transcription friendly 256-bit key format.
+Keycode is a transcription friendly 256-bit key format [(spec)][1].
 
 It takes a key like this:
 
@@ -95,3 +95,5 @@ characters, invalid structure, detected errors, etc.) will be reported with an
 
 *Note that a keycode generated with any format is parsable by any other format.*
 Finally, note that all classes are immutable, serializable and threadsafe.
+
+[1]: https://raw.githubusercontent.com/wiki/tomgibara/keycode/docs/keycode-specification-1.0.pdf "Keycode specification 1.0"
